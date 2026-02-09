@@ -3,157 +3,59 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script> 
-    <title>Acesso Premium | Bob Elétrica ⚡</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <title>Painel Premium | Bob Elétrica ⚡</title>
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <style>
-        :root {
-            --ouro: #edcc29;
-            --ouro-dark: #b8920a;
-            --preto-puro: #050505;
-            --preto-card: rgba(18, 18, 20, 0.95);
-            --vidro-borda: rgba(237, 204, 41, 0.3);
-        }
-
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: var(--preto-puro) !important;
-            display: flex; justify-content: center; align-items: center;
-            font-family: 'Inter', sans-serif; overflow: hidden; color: white;
-        }
-
-        /* FUNDO COM GRADIENTE DINÂMICO */
-        body::before {
-            content: ""; position: absolute; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(237, 204, 41, 0.1) 0%, transparent 80%);
-            z-index: 1;
-        }
-
-        /* CARD PREMIUM COM EFEITO GLASS */
-        .login-card {
-            position: relative; z-index: 10;
-            background: var(--preto-card) !important;
-            padding: 50px 40px; border-radius: 24px;
-            border: 1px solid var(--vidro-borda);
-            width: 100%; max-width: 340px; text-align: center;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8), 0 0 20px rgba(237, 204, 41, 0.05);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-        }
-
-        .login-card h1 { 
-            font-weight: 900; color: var(--ouro); margin: 0; font-size: 28px; 
-            letter-spacing: -1px; text-shadow: 0 0 15px rgba(237, 204, 41, 0.4);
-        }
-        
-        .login-card p { 
-            font-size: 10px; text-transform: uppercase; letter-spacing: 4px; 
-            opacity: 0.5; margin-bottom: 40px; color: #fff;
-        }
-
-        /* INPUTS MODERNOS */
-        .input-group { margin-bottom: 25px; text-align: left; }
-        .input-group label { 
-            display: block; font-size: 11px; font-weight: 700; 
-            margin-bottom: 8px; color: var(--ouro); letter-spacing: 1px; 
-        }
-        
-        .input-group input {
-            width: 100%; background: rgba(0,0,0,0.5) !important;
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 15px; border-radius: 12px; color: white !important;
-            box-sizing: border-box; outline: none; transition: 0.3s;
-        }
-
-        .input-group input:focus { 
-            border-color: var(--ouro); box-shadow: 0 0 15px rgba(237, 204, 41, 0.2); 
-        }
-
-        /* BOTÃO ESTILO OURO */
-        .btn-login {
-            width: 100%; 
-            background: linear-gradient(135deg, var(--ouro), var(--ouro-dark));
-            color: #000; border: none; padding: 18px; border-radius: 50px;
-            font-weight: 900; cursor: pointer; text-transform: uppercase;
-            transition: 0.4s; font-size: 14px; letter-spacing: 1px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-
-        .btn-login:hover { 
-            transform: scale(1.02); box-shadow: 0 0 25px rgba(237, 204, 41, 0.5); 
-        }
-
-        #cms-wrapper { display: none; width: 100%; height: 100%; position: absolute; z-index: 999; }
+        :root { --ouro: #edcc29; --preto: #050505; }
+        body { background: var(--preto); font-family: 'Inter', sans-serif; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: #111; padding: 40px; border-radius: 20px; border: 1px solid var(--ouro); text-align: center; width: 300px; z-index: 100; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; border-radius: 30px; border: none; background: var(--ouro); font-weight: bold; cursor: pointer; }
+        #cms-root { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
     </style>
 </head>
 <body>
 
-    <div id="login-interface" class="login-card">
-        <h1>BOB ELÉTRICA</h1>
-        <p>Dashboard Systems</p>
-        
-        <div class="input-group">
-            <label>IDENTIFICAÇÃO</label>
-            <input type="text" id="userField" placeholder="Digite o usuário">
-        </div>
-        
-        <div class="input-group">
-            <label>CHAVE DE ACESSO</label>
-            <input type="password" id="passField" placeholder="••••••••">
-        </div>
-        
-        <button class="btn-login" onclick="validarAcesso()">Autenticar Sistema</button>
-        
-        <a href="/" style="display:block; margin-top:25px; color:#666; font-size:11px; text-decoration:none; font-weight:700; text-transform:uppercase;">
-            ← Voltar ao site
-        </a>
+    <div id="login-screen" class="card">
+        <h2 style="color:var(--ouro)">SISTEMA BOB</h2>
+        <input type="text" id="user" placeholder="Usuário">
+        <input type="password" id="pass" placeholder="Senha">
+        <button onclick="entrar()">DESBLOQUEAR</button>
     </div>
 
-    <div id="cms-wrapper">
-        <div id="nc-root"></div>
-    </div>
+    <div id="cms-root"></div>
 
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
     <script>
-        // CONFIGURAÇÃO DE ACESSO
-        const USUARIO_CORRETO = "bob"; 
-        const SENHA_CORRETA = "eletrica2024";
+        function entrar() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
 
-        function validarAcesso() {
-            const u = document.getElementById('userField').value;
-            const p = document.getElementById('passField').value;
+            if (u === "bob" && p === "eletrica2024") {
+                // SALVA QUE LOGOU PARA NÃO VOLTAR NA TELA PRETA
+                sessionStorage.setItem('sessao_bob', 'true');
+                
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('cms-root').style.display = 'block';
 
-            if (u === USUARIO_CORRETO && p === SENHA_CORRETA) {
-                document.getElementById('login-interface').style.display = 'none';
-                document.getElementById('cms-wrapper').style.display = 'block';
-                injetarTemaCMS();
+                // SÓ CHAMA O NETLIFY SE PASSAR DA SENHA DO BOB
+                if (window.netlifyIdentity) {
+                    netlifyIdentity.open();
+                }
             } else {
-                alert("ACESSO NEGADO: Credenciais Inválidas.");
+                alert("Acesso incorreto");
             }
         }
 
-        function injetarTemaCMS() {
-            const style = document.createElement('style');
-            style.innerHTML = `
-                body, #nc-root, [class*="AppContainer"] { background: #000 !important; }
-                nav { background: #111 !important; border-bottom: 2px solid #edcc29 !important; }
-                [class*="Card"] { 
-                    background: rgba(255,255,255,0.03) !important; 
-                    border: 1px solid rgba(237,204,41,0.2) !important; 
-                    border-radius: 12px !important;
-                }
-                button[class*="CreateButton"] { 
-                    background: #edcc29 !important; border-radius: 30px !important; color: #000 !important;
-                }
-                span, h1, h2, h3, label { color: #fff !important; }
-            `;
-            document.head.appendChild(style);
+        // Se já logou antes, não mostra a tela do "bob" de novo
+        if (sessionStorage.getItem('sessao_bob') === 'true') {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('cms-root').style.display = 'block';
         }
 
-        if (window.location.hostname !== 'localhost') {
-            localStorage.setItem('netlifySiteURL', 'https://site-bobeletrica.netlify.app');
-        }
+        // Garante a URL correta no Netlify
+        localStorage.setItem('netlifySiteURL', window.location.origin);
     </script>
 </body>
 </html>
