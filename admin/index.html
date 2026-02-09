@@ -3,118 +3,94 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Painel Administrativo | Bob Elétrica ⚡</title>
-    
+    <title>Painel Bob Elétrica ⚡</title>
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --ouro: #edcc29; --preto: #050505; }
+        /* --- ESTILO BASE (IDÊNTICO AO ORÇAMENTO) --- */
+        :root {
+            --amarelo: #edcc29;
+            --preto-bg: #161618;
+            --campo-bg: #353538;
+        }
+
         body { 
-            background: var(--preto); 
-            font-family: 'Inter', sans-serif; 
-            color: white; 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh;
-        }
-        
-        /* TELA 1: VALIDAÇÃO DO BOB */
-        #camada-admin {
-            background: #111; 
-            padding: 50px 40px; 
-            border-radius: 24px; 
-            border: 1px solid var(--ouro); 
-            text-align: center; 
-            width: 100%; 
-            max-width: 320px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.9);
-            z-index: 100;
+            background-color: var(--preto-bg) !important;
+            margin: 0; font-family: 'Inter', sans-serif;
+            background-image: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(237, 204, 41, 0.1) 0%, rgba(22, 22, 24, 0) 30%) !important;
         }
 
-        h1 { color: var(--ouro); font-weight: 900; margin-bottom: 30px; font-size: 24px; }
-        input { 
-            width: 100%; padding: 15px; margin-bottom: 15px; 
-            border-radius: 12px; border: 1px solid #333; 
-            background: #000; color: white; box-sizing: border-box; 
-        }
+        /* --- LIMPEZA DO SISTEMA (MATA O BRANCO E O CINZA) --- */
+        #nc-root [class*="AppHeaderBar"] { background: rgba(0,0,0,0.5) !important; backdrop-filter: blur(10px) !important; border: none !important; }
+        #nc-root [class*="AppLayoutContent"] { background: transparent !important; padding-top: 20px !important; }
+        #nc-root [class*="SidebarContainer"] { background: transparent !important; border: none !important; }
         
-        .btn-prosseguir { 
-            width: 100%; padding: 18px; border-radius: 50px; border: none; 
-            background: var(--ouro); font-weight: 900; cursor: pointer; 
-            text-transform: uppercase; transition: 0.3s;
+        /* Transforma a lista de serviços em cards simples como o seu form */
+        #nc-root [class*="Card"] {
+            background: rgba(42, 42, 45, 0.9) !important;
+            border-radius: 20px !important;
+            border: 1px solid rgba(237, 204, 41, 0.1) !important;
+            backdrop-filter: blur(12px) !important;
+            color: white !important;
+            margin-bottom: 15px !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
         }
-        .btn-prosseguir:hover { transform: scale(1.05); background: #fff; }
 
-        /* TELA 2: ONDE O CMS VAI APARECER DEPOIS */
-        #cms-container { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+        /* Botão "New Serviço" igual ao botão "Solicitar" */
+        #nc-root button[class*="nc-button"] {
+            background: var(--amarelo) !important;
+            color: var(--preto-bg) !important;
+            border-radius: 14px !important;
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            padding: 12px 25px !important;
+            border: none !important;
+            transition: 0.3s;
+        }
+        #nc-root button[class*="nc-button"]:hover { transform: scale(1.05); background: white !important; }
+
+        /* Esconde textos desnecessários e ícones que poluem */
+        [class*="ControlPaneContainer"] { background: transparent !important; }
+        #nc-root [class*="PaneContainer"] { background: var(--preto-bg) !important; }
+
+        /* RAIOS NO FUNDO */
+        .thunderbolt-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+        .thunderbolt { position: absolute; opacity: 0; animation: flash 2s infinite; }
+        .thunderbolt svg path { stroke: var(--amarelo); stroke-width: 3; fill: none; filter: drop-shadow(0 0 5px var(--amarelo)); }
+        @keyframes flash { 0%, 100% { opacity: 0; } 10%, 20% { opacity: 0.8; } }
     </style>
 </head>
 <body>
-
-    <div id="camada-admin">
-        <h1>IDENTIFICAÇÃO BOB</h1>
-        <input type="text" id="userBob" placeholder="Usuário">
-        <input type="password" id="passBob" placeholder="Senha">
-        <button class="btn-prosseguir" onclick="validarPrimeiraCamada()">Acessar Sistema</button>
-        <p style="font-size: 10px; opacity: 0.4; margin-top: 20px;">SISTEMA DE SEGURANÇA 2FA</p>
-    </div>
-
-    <div id="cms-container"></div>
-
+    <div class="thunderbolt-container" id="thunderboltContainer"></div>
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-
     <script>
-        // 1. Função que libera a segunda tela
-        function validarPrimeiraCamada() {
-            const u = document.getElementById('userBob').value;
-            const p = document.getElementById('passBob').value;
+        window.CMS_LOCALE = 'pt'; // Força Português
 
-            if (u === "bob" && p === "eletrica2024") {
-                // Remove a tela do Bob
-                document.getElementById('camada-admin').style.display = 'none';
-                
-                // Mostra o container do CMS
-                document.getElementById('cms-container').style.display = 'block';
-                
-                // Agora sim, chamamos o login do Netlify Identity (Tela Branca)
-                iniciarSegundoLogin();
-            } else {
-                alert("Acesso Negado.");
-            }
+        // Luz seguindo o mouse
+        window.addEventListener('mousemove', e => {
+            document.body.style.setProperty('--x', e.clientX + 'px');
+            document.body.style.setProperty('--y', e.clientY + 'px');
+        });
+
+        // Gerador de Raios
+        function criarRaio() {
+            const container = document.getElementById('thunderboltContainer');
+            const raio = document.createElement('div');
+            raio.className = 'thunderbolt';
+            raio.style.left = Math.random() * 100 + '%';
+            raio.style.top = Math.random() * 100 + '%';
+            raio.innerHTML = `<svg width="60" height="120"><path d="M 40 0 L 20 50 L 50 50 L 10 120"></path></svg>`;
+            container.appendChild(raio);
+            setTimeout(() => raio.remove(), 2000);
         }
+        setInterval(criarRaio, 3000);
 
-        function iniciarSegundoLogin() {
-            // Se o usuário não estiver logado no Netlify, abre a janelinha branca
-            if (window.netlifyIdentity) {
-                const user = netlifyIdentity.currentUser();
-                if (!user) {
-                    netlifyIdentity.open(); // AQUI abre o segundo login
-                }
-            }
-            
-            // Configura o CMS
-            localStorage.setItem('netlifySiteURL', window.location.origin);
-            injetarEstiloPremium();
-        }
-
-        // Se o Netlify Identity recarregar a página após o login, o CMS assume
+        // Login Netlify
         if (window.netlifyIdentity) {
-            window.netlifyIdentity.on("login", () => {
-                document.location.reload();
+            window.netlifyIdentity.on("init", user => {
+                if (!user) {
+                    window.netlifyIdentity.on("login", () => { document.location.href = "/admin/"; });
+                }
             });
-        }
-
-        function injetarEstiloPremium() {
-            const style = document.createElement('style');
-            style.innerHTML = `
-                body, #nc-root { background: #000 !important; }
-                nav { background: #111 !important; border-bottom: 2px solid #edcc29 !important; }
-                span, h1, h2, h3 { color: #fff !important; }
-            `;
-            document.head.appendChild(style);
         }
     </script>
 </body>
