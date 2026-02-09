@@ -3,59 +3,119 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Painel Premium | Bob Elétrica ⚡</title>
+    <title>Painel Administrativo | Bob Elétrica ⚡</title>
+    
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --ouro: #edcc29; --preto: #050505; }
-        body { background: var(--preto); font-family: 'Inter', sans-serif; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: #111; padding: 40px; border-radius: 20px; border: 1px solid var(--ouro); text-align: center; width: 300px; z-index: 100; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; border-radius: 30px; border: none; background: var(--ouro); font-weight: bold; cursor: pointer; }
-        #cms-root { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+        body { 
+            background: var(--preto); 
+            font-family: 'Inter', sans-serif; 
+            color: white; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+        }
+        
+        /* TELA 1: VALIDAÇÃO DO BOB */
+        #camada-admin {
+            background: #111; 
+            padding: 50px 40px; 
+            border-radius: 24px; 
+            border: 1px solid var(--ouro); 
+            text-align: center; 
+            width: 100%; 
+            max-width: 320px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
+            z-index: 100;
+        }
+
+        h1 { color: var(--ouro); font-weight: 900; margin-bottom: 30px; font-size: 24px; }
+        input { 
+            width: 100%; padding: 15px; margin-bottom: 15px; 
+            border-radius: 12px; border: 1px solid #333; 
+            background: #000; color: white; box-sizing: border-box; 
+        }
+        
+        .btn-prosseguir { 
+            width: 100%; padding: 18px; border-radius: 50px; border: none; 
+            background: var(--ouro); font-weight: 900; cursor: pointer; 
+            text-transform: uppercase; transition: 0.3s;
+        }
+        .btn-prosseguir:hover { transform: scale(1.05); background: #fff; }
+
+        /* TELA 2: ONDE O CMS VAI APARECER DEPOIS */
+        #cms-container { display: none; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="card">
-        <h2 style="color:var(--ouro)">SISTEMA BOB</h2>
-        <input type="text" id="user" placeholder="Usuário">
-        <input type="password" id="pass" placeholder="Senha">
-        <button onclick="entrar()">DESBLOQUEAR</button>
+    <div id="camada-admin">
+        <h1>IDENTIFICAÇÃO BOB</h1>
+        <input type="text" id="userBob" placeholder="Usuário">
+        <input type="password" id="passBob" placeholder="Senha">
+        <button class="btn-prosseguir" onclick="validarPrimeiraCamada()">Acessar Sistema</button>
+        <p style="font-size: 10px; opacity: 0.4; margin-top: 20px;">SISTEMA DE SEGURANÇA 2FA</p>
     </div>
 
-    <div id="cms-root"></div>
+    <div id="cms-container"></div>
 
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
     <script>
-        function entrar() {
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
+        // 1. Função que libera a segunda tela
+        function validarPrimeiraCamada() {
+            const u = document.getElementById('userBob').value;
+            const p = document.getElementById('passBob').value;
 
             if (u === "bob" && p === "eletrica2024") {
-                // SALVA QUE LOGOU PARA NÃO VOLTAR NA TELA PRETA
-                sessionStorage.setItem('sessao_bob', 'true');
+                // Remove a tela do Bob
+                document.getElementById('camada-admin').style.display = 'none';
                 
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('cms-root').style.display = 'block';
-
-                // SÓ CHAMA O NETLIFY SE PASSAR DA SENHA DO BOB
-                if (window.netlifyIdentity) {
-                    netlifyIdentity.open();
-                }
+                // Mostra o container do CMS
+                document.getElementById('cms-container').style.display = 'block';
+                
+                // Agora sim, chamamos o login do Netlify Identity (Tela Branca)
+                iniciarSegundoLogin();
             } else {
-                alert("Acesso incorreto");
+                alert("Acesso Negado.");
             }
         }
 
-        // Se já logou antes, não mostra a tela do "bob" de novo
-        if (sessionStorage.getItem('sessao_bob') === 'true') {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('cms-root').style.display = 'block';
+        function iniciarSegundoLogin() {
+            // Se o usuário não estiver logado no Netlify, abre a janelinha branca
+            if (window.netlifyIdentity) {
+                const user = netlifyIdentity.currentUser();
+                if (!user) {
+                    netlifyIdentity.open(); // AQUI abre o segundo login
+                }
+            }
+            
+            // Configura o CMS
+            localStorage.setItem('netlifySiteURL', window.location.origin);
+            injetarEstiloPremium();
         }
 
-        // Garante a URL correta no Netlify
-        localStorage.setItem('netlifySiteURL', window.location.origin);
+        // Se o Netlify Identity recarregar a página após o login, o CMS assume
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("login", () => {
+                document.location.reload();
+            });
+        }
+
+        function injetarEstiloPremium() {
+            const style = document.createElement('style');
+            style.innerHTML = `
+                body, #nc-root { background: #000 !important; }
+                nav { background: #111 !important; border-bottom: 2px solid #edcc29 !important; }
+                span, h1, h2, h3 { color: #fff !important; }
+            `;
+            document.head.appendChild(style);
+        }
     </script>
 </body>
 </html>
