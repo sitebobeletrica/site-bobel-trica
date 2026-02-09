@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orçamento | Bob Elétrica</title>
+    <style>
+        :root {
+            --amarelo: #edcc29;
+            --preto-bg: #161618;
+            --cinza-form: #2a2a2d;
+            --campo-bg: #353538;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--preto-bg); 
+            background-image: radial-gradient(
+                circle at var(--x, 50%) var(--y, 50%), 
+                rgba(237, 204, 41, 0.1) 0%, 
+                rgba(22, 22, 24, 0) 25% 
+            );
+            color: white; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- RAIOS ANIMADOS NO FUNDO --- */
+        .thunderbolt-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .thunderbolt {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .thunderbolt svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .thunderbolt svg path {
+            fill: none;
+            stroke: var(--amarelo);
+            stroke-width: 3px;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            filter: drop-shadow(0 0 5px var(--amarelo));
+        }
+
+        .thunderbolt.animate svg path {
+            animation: drawThunderbolt 1.5s forwards ease-out, 
+                        glowThunderbolt 3s infinite alternate 1.5s;
+        }
+
+        @keyframes drawThunderbolt {
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes glowThunderbolt {
+            0% { opacity: 0.8; filter: drop-shadow(0 0 5px var(--amarelo)); }
+            100% { opacity: 1; filter: drop-shadow(0 0 15px var(--amarelo)); }
+        }
+
+        /* --- CONTAINER PRINCIPAL DO FORMULÁRIO --- */
+        .form-container { 
+            background: rgba(42, 42, 45, 0.9); 
+            padding: 40px; 
+            border-radius: 28px; 
+            width: 90%; 
+            max-width: 420px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+            border: 1px solid rgba(237, 204, 41, 0.1);
+            backdrop-filter: blur(12px);
+            z-index: 10;
+            position: relative;
+        }
+
+        h2 { text-align: center; color: var(--amarelo); margin-bottom: 25px; font-weight: 800; letter-spacing: -1px; }
+        label { display: block; margin-bottom: 8px; font-size: 0.75rem; color: #aaa; font-weight: 700; text-transform: uppercase; }
+        
+        input, select, textarea { 
+            width: 100%; padding: 15px; margin-bottom: 18px; 
+            background: var(--campo-bg); border: 1px solid #444; 
+            border-radius: 14px; color: white; outline: none; font-size: 1rem;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--amarelo); background: #3e3e41; }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 5px; }
+
+        .btn-send { 
+            background: var(--amarelo); color: var(--preto-bg); 
+            border: none; padding: 18px; flex: 2; 
+            border-radius: 14px; font-weight: 800; cursor: pointer;
+            font-size: 1rem; transition: 0.3s;
+        }
+        .btn-send:hover { background: white; transform: scale(1.02); }
+
+        .btn-cancel {
+            background: #2a2a2d; color: #ff5252;
+            border: 1px solid #444; padding: 18px; flex: 1;
+            border-radius: 14px; font-weight: 700; cursor: pointer;
+            font-size: 0.8rem; transition: 0.3s;
+        }
+        .btn-cancel:hover { background: #ff5252; color: white; }
+
+        #msgStatus { text-align: center; font-size: 0.75rem; color: var(--amarelo); margin-bottom: 15px; min-height: 18px; font-weight: 600; }
+
+        .btn-back { display: block; text-align: center; margin-top: 20px; color: #777; text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
+        .btn-back:hover { color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="thunderbolt-container" id="thunderboltContainer"></div>
+
+    <div class="form-container">
+        <h2>Orçamento ⚡</h2>
+        
+        <div id="msgStatus"></div>
+
+        <form id="orcamentoForm">
+            <label>Nome Completo</label>
+            <input type="text" id="nome" placeholder="Seu nome" required>
+
+            <label>Tipo de Serviço</label>
+            <select id="tipoServico">
+                <option value="Reparo Elétrico">Reparo Elétrico</option>
+                <option value="Emergência 24h">Serviço Emergencial 🚨</option>
+                <option value="Instalação/Projeto">Instalação ou Projeto</option>
+                <option value="Manutenção Preventiva">Manutenção Preventiva</option>
+            </select>
+
+            <label>Detalhes do Pedido</label>
+            <textarea id="detalhes" rows="3" placeholder="Como o Bob pode ajudar?" required></textarea>
+
+            <div class="btn-group">
+                <button type="button" class="btn-send" onclick="enviar()">SOLICITAR</button>
+                <button type="button" class="btn-cancel" id="btnLimpar">LIMPAR</button>
+            </div>
+            
+            <a href="index.html" class="btn-back">← Voltar ao início</a>
+        </form>
+    </div>
+
+    <script>
+        // --- 1. LÓGICA DO MOUSE ---
+        const body = document.querySelector('body');
+        window.addEventListener('mousemove', e => {
+            body.style.setProperty('--x', e.clientX + 'px');
+            body.style.setProperty('--y', e.clientY + 'px');
+        });
+
+        // --- 2. LÓGICA DO SALVAMENTO AUTOMÁTICO (LOCALSTORAGE) ---
+        const orcamentoForm = document.getElementById('orcamentoForm');
+        const msgStatus = document.getElementById('msgStatus');
+        const btnLimpar = document.getElementById('btnLimpar');
+        const inputs = orcamentoForm.querySelectorAll('input, textarea, select');
+
+        // Carregar dados ao abrir
+        window.addEventListener('load', () => {
+            inputs.forEach(input => {
+                const salvo = localStorage.getItem(`bob_draft_${input.id}`);
+                if (salvo) {
+                    input.value = salvo;
+                    msgStatus.innerText = "📝 Rascunho carregado automaticamente";
+                }
+            });
+        });
+
+        // Salvar enquanto digita
+        orcamentoForm.addEventListener('input', (e) => {
+            localStorage.setItem(`bob_draft_${e.target.id}`, e.target.value);
+            msgStatus.innerText = "💾 Salvando rascunho...";
+            setTimeout(() => { if(msgStatus.innerText === "💾 Salvando rascunho...") msgStatus.innerText = "✅ Tudo pronto!"; }, 1500);
+        });
+
+        // Botão Limpar / Cancelar
+        btnLimpar.addEventListener('click', () => {
+            if(confirm("Deseja limpar todos os dados preenchidos?")) {
+                inputs.forEach(input => {
+                    localStorage.removeItem(`bob_draft_${input.id}`);
+                    input.value = (input.tagName === 'SELECT') ? input.options[0].value : '';
+                });
+                msgStatus.innerText = "🧹 Dados removidos.";
+                setTimeout(() => { msgStatus.innerText = ""; }, 2000);
+            }
+        });
+
+        // --- 3. LÓGICA DOS RAIOS ---
+        const thunderboltContainer = document.getElementById('thunderboltContainer');
+        function createThunderbolt() {
+            const thunderboltDiv = document.createElement('div');
+            thunderboltDiv.className = 'thunderbolt';
+            const rotation = Math.random() * 360;
+            const scale = 0.5 + Math.random() * 0.5;
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            
+            thunderboltDiv.style.cssText = `top: ${y}%; left: ${x}%; transform: translate(-50%, -50%) rotate(${rotation}deg) scale(${scale}); opacity: 0;`;
+            thunderboltDiv.innerHTML = `<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M 50 0 L 40 40 L 70 40 L 30 100"></path></svg>`;
+            thunderboltContainer.appendChild(thunderboltDiv);
+
+            setTimeout(() => {
+                thunderboltDiv.classList.add('animate');
+                thunderboltDiv.style.opacity = 0.8;
+            }, 10);
+
+            setTimeout(() => {
+                thunderboltDiv.style.opacity = 0;
+                thunderboltDiv.addEventListener('transitionend', () => thunderboltDiv.remove());
+            }, 2000);
+        }
+        setInterval(createThunderbolt, 2000);
+        createThunderbolt();
+
+        // --- 4. FUNÇÃO ENVIAR ---
+        function enviar() {
+            const nome = document.getElementById('nome').value;
+            const tipo = document.getElementById('tipoServico').value;
+            const detalhes = document.getElementById('detalhes').value;
+            const numero = "5521974819165";
+
+            if(nome && detalhes) {
+                const msg = `*BOB ELÉTRICA - NOVO CONTATO*%0A%0A*Cliente:* ${nome}%0A*Serviço:* ${tipo}%0A*Descrição:* ${detalhes}`;
+                
+                // Limpa o rascunho após o envio bem-sucedido
+                inputs.forEach(input => localStorage.removeItem(`bob_draft_${input.id}`));
+                
+                window.open(`https://wa.me/${numero}?text=${msg}`, '_blank');
+            } else {
+                alert("Por favor, preencha seu nome e os detalhes do serviço.");
+            }
+        }
+    </script>
+</body>
+</html>
