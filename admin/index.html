@@ -79,6 +79,93 @@
         .thunderbolt { position: absolute; opacity: 0; animation: flash 2s infinite; }
         .thunderbolt svg path { stroke: var(--amarelo); stroke-width: 3; fill: none; filter: drop-shadow(0 0 5px var(--amarelo)); }
         @keyframes flash { 0%, 100% { opacity: 0; } 10%, 20% { opacity: 0.8; } }
+
+/* --- CUSTOMIZAÇÃO TOTAL DO DECAP CMS --- */
+
+/* 1. Fundo e Scrollbar */
+#nc-root {
+    background-color: #0a0a0b !important;
+}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #161618; }
+::-webkit-scrollbar-thumb { background: #edcc29; border-radius: 10px; }
+
+/* 2. Top Bar (Barra de Cima) */
+#nc-root [class*="AppHeaderBar"] {
+    background: #111113 !important;
+    border-bottom: 2px solid #edcc29 !important;
+    padding: 0 20px !important;
+}
+
+/* 3. Sidebar (Menu Lateral) */
+#nc-root [class*="SidebarContainer"] {
+    background: #111113 !important;
+    border-right: 1px solid rgba(237, 204, 41, 0.1) !important;
+}
+#nc-root [class*="SidebarLink"] {
+    color: #fff !important;
+    font-weight: 600 !important;
+    margin: 5px 10px !important;
+    border-radius: 8px !important;
+}
+#nc-root [class*="SidebarLinkActive"] {
+    background: #edcc29 !important;
+    color: #000 !important;
+}
+
+/* 4. Grid de Conteúdo (Os Cards de Serviços) */
+#nc-root [class*="CollectionMain"] {
+    padding: 30px !important;
+}
+
+#nc-root [class*="Card"] {
+    background: #1c1c1e !important;
+    border: 1px solid rgba(237, 204, 41, 0.1) !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    transition: 0.3s !important;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3) !important;
+}
+#nc-root [class*="Card"]:hover {
+    border-color: #edcc29 !important;
+    transform: translateY(-5px) !important;
+    box-shadow: 0 15px 30px rgba(237, 204, 41, 0.1) !important;
+}
+
+/* 5. Inputs dentro da Edição (Formulário) */
+#nc-root [class*="ControlPaneContainer"] {
+    background: #161618 !important;
+    border-radius: 20px !important;
+    padding: 30px !important;
+}
+#nc-root label {
+    color: #edcc29 !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    font-size: 11px !important;
+}
+#nc-root input, #nc-root textarea, #nc-root select {
+    background: #000 !important;
+    color: #fff !important;
+    border: 1px solid #333 !important;
+    border-radius: 10px !important;
+    padding: 12px !important;
+}
+#nc-root input:focus {
+    border-color: #edcc29 !important;
+}
+
+/* 6. Botões de Ação (Publicar/Salvar) */
+#nc-root [class*="AppHeaderButton"] {
+    border-radius: 50px !important;
+    font-weight: 900 !important;
+}
+#nc-root button[class*="nc-button-primary"] {
+    background: #edcc29 !important;
+    color: #000 !important;
+}
+        
+        
     </style>
 </head>
 <body>
@@ -167,5 +254,6 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         }
     </script>
+    
 </body>
 </html>
