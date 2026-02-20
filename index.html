@@ -59,7 +59,14 @@ header.scrolled {
             height: 90vh; display: flex; flex-direction: column; justify-content: center; 
             align-items: center; text-align: center; padding: 0 10%;
         }
-
+window.addEventListener("scroll", () => {
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add("scrolled");
+    } else {
+        navbar.classList.remove("scrolled");
+    }
+});
         .hero h1 { 
     font-size: clamp(3rem, 10vw, 6rem); /* Aumentado o mínimo e o máximo */
     margin: 0; 
@@ -426,6 +433,7 @@ carregarServicos();
 
 </body>
 </html>
+
 
 
 
