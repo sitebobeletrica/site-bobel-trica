@@ -303,7 +303,14 @@
             var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             document.getElementById("myBar").style.width = (winScroll / height) * 100 + "%";
         };
-
+        
+/* Efeito quando você rola a página (fica com fundo cinza escuro/vidro) */
+header.scrolled {
+    padding: 15px 8%;
+    background: rgba(5, 5, 5, 0.85); /* Fundo escuro com transparência */
+    backdrop-filter: blur(15px); /* Efeito de vidro embaçado */
+    border-bottom: 1px solid rgba(0, 255, 194, 0.2); /* Linha fina neon em baixo */
+}
         // BUSCA AUTOMÁTICA DE SERVIÇOS (FOTOS DO CELULAR)
 async function carregarServicos() {
     const container = document.getElementById('lista-servicos');
@@ -421,6 +428,7 @@ carregarServicos();
 
 </body>
 </html>
+
 
 
 
