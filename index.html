@@ -31,13 +31,27 @@
             pointer-events: none; z-index: 9999;
         }
 
-        header { 
-            position: fixed; top: 40px; left: 0; width: 100%; display: flex; 
-            justify-content: space-between; align-items: center; padding: 10px 5%;
-            box-sizing: border-box; z-index: 1000; background: rgba(22, 22, 24, 0.9); 
-            backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
+       header {
+    position: fixed; /* Fixa no topo da tela */
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 25px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 99999; /* Garante que ele fique acima de tudo (inclusive vídeos e animações) */
+    transition: all 0.4s ease;
+    background: transparent; /* Começa transparente */
+}
 
+/* Efeito quando você rola a página (fica com fundo cinza escuro/vidro) */
+header.scrolled {
+    padding: 15px 8%;
+    background: rgba(5, 5, 5, 0.85); /* Fundo escuro com transparência */
+    backdrop-filter: blur(15px); /* Efeito de vidro embaçado */
+    border-bottom: 1px solid rgba(0, 255, 194, 0.2); /* Linha fina neon em baixo */
+}
         header img { height: 70px; width: auto; display: block; }
         .logo { font-weight: 900; font-size: 1.4rem; color: var(--amarelo); letter-spacing: -1px; }
 
@@ -412,5 +426,6 @@ carregarServicos();
 
 </body>
 </html>
+
 
 
